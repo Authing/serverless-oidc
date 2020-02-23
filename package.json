@@ -1,4 +1,29 @@
 {
+  "name": "serverless-oidc",
+  "version": "1.0.0",
+  "description": "serverless oidc",
+  "main": "serverless.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Authing/serverless-oidc.git"
+  },
+  "keywords": [
+    "serverless",
+    "authing",
+    "oidc"
+  ],
+  "author": "Authing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Authing/serverless-oidc/issues"
+  },
+  "homepage": "https://github.com/Authing/serverless-oidc#readme",
   "dependencies": {
     "@serverless/core": "^1.1.2",
     "@serverless/tencent-apigateway": "^2.1.2",
