@@ -4,10 +4,10 @@
 
 Serverless Authing OIDC(OpenID Connect) Demo.
 
-<p align="center">
+<!-- <p align="center">
   <span>简体中文</span> |
   <a href="./README_en.md">English</a>
-</p>
+</p> -->
 
 ## 什么是 OIDC 协议
 
@@ -26,7 +26,22 @@ Serverless Authing OIDC(OpenID Connect) Demo.
 
 ## 示例链接 🔗
 
-[Serless Oidc Demo](http://service-jaom3m0x-1257685189.sh.apigw.tencentcs.com/)
+[Serless Oidc echo Demo](http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/)
+
+## 设计思想
+Authing OIDC Component 组件是通过创建不同的 `scf(Serverless Cloud Function)`  并通过 `API` 网关触发器,来实现`OIDC`认证功能。
+他只需要占用这几个路由
+|  Route  | Desc |
+|  ----  | ----  |
+| /login/ | 实现登录的跳转 |
+| /code2token/  | 通过获取返回的 `Code`<br>来换取 `Token` 同时会<br>将`token`设置在`Cookie`<br>中 以及跳转到 `/` 路由 |
+| /refreshtoken/  | 刷新 `Token` |
+| /status/  | 返回 `OIDC` 应用正常与否|
+| /checktoken/ | 返回 `Token` 是否有效 |
+| /userinfo/  | 通过 `Token` 换取用户信息 |
+
+在完成认证以后会跳转至`/`路由 在这个路由下的应用只需要对去Cookie即可获取用户登录情况 以及获取用户的 Token 来完成其他的业务流程
+
 
 ## 前提条件 🧾
 
@@ -96,7 +111,10 @@ x.x.x
    </details>
 
 ## 构建应用 🚗
-
+### 0. Clone 仓库
+```sh
+git clone https://github.com/Authing/serverless-oidc.git && cd serverless-oidc
+```
 ### 1. 创建需要的文件
 
 本地创建 `serverless.yml`文件：
@@ -108,7 +126,7 @@ touch serverless.yml
 ### 2. 安装所需依赖
 
 ```
-npm install --save @authing/serverless-oidc
+npm install
 ```
 
 ### 3. 编辑 `serverless.yml` 文件
@@ -130,6 +148,28 @@ firstApp:
       client_secret: 你的 OIDC 应用 secret
       response_type: code
 ```
+### 4. 创建你的应用
+在根目录下创建`app`目录 以及入口文件`app.js`
+```sh
+mkdir app&& touch app/app.js
+```
+这里我们以一个`echo`服务为例子
+在`app.js`目录下创建
+```
+exports.echo = async function hello(event, context){
+    return { 
+        headers: {"Content-Type": "application/json"}, 
+        body: JSON.stringify(event), 
+        statusCode: 200,
+    }
+}
+exports.pathMap = [
+    { path: "/", handlerName: "echo" },
+]
+```
+其中 `pathMap`定义了 不同的路由对应的 `Name` 的关系  
+`echo` 函数的定义是 腾讯`FAAS`的写法
+
 
 ## 部署 🛫️
 
@@ -139,8 +179,9 @@ firstApp:
 
 ```shell
 $ sls --debug
-```
 
+```
+在执行命令以后 等待应用部署以及配置API网关即可完成部署
 ### 账号配置（可选）
 
 当前默认支持 CLI 扫描二维码登录，如你希望配置持久的环境变量/秘钥信息，也可以本地创建 `.env` 文件
@@ -154,21 +195,94 @@ TENCENT_SECRET_KEY=123
 
 ## 配置回调地址
 
-部署完成后 `cli` 界面会返回项目的 `url` 地址。
+部署完成后命令行界面会返回项目的 `url` 地址。
 
 ```sh
-$ sls --debug
-  express:
-    region:              ap-shanghai
-    functionName:        ExpressComponent_b7ilv1
-    apiGatewayServiceId: service-jaom3m0x
-    url:                 http://service-jaom3m0x-1257685189.sh.apigw.tencentcs.com/release/
-  38s › express › done
+$ sls
+start uploading function echo
+start uploading function getAuthorizationURL
+start uploading function getTokenByCode
+start uploading function refreshToken
+start uploading function status
+start uploading function checkToken
+start uploading function getUserInfoByAccessToken
+
+  region:              ap-guangzhou
+  appName:             Authing-OIDC_wnitzx
+  route: 
+    - 
+      path:     /
+      method:   ANY
+      function: 
+        isIntegratedResponse: true
+        functionName:         echo
+    - 
+      path:     /login/
+      method:   ANY
+      function: 
+        isIntegratedResponse: true
+        functionName:         getAuthorizationURL
+    - 
+      path:     /code2token/
+      method:   ANY
+      function: 
+        isIntegratedResponse: true
+        functionName:         getTokenByCode
+    - 
+      path:     /refreshtoken/
+      method:   ANY
+      function: 
+        isIntegratedResponse: true
+        functionName:         refreshToken
+    - 
+      path:     /status/
+      method:   ANY
+      function: 
+        isIntegratedResponse: true
+        functionName:         status
+    - 
+      path:     /checktoken/
+      method:   ANY
+      function: 
+        isIntegratedResponse: true
+        functionName:         checkToken
+    - 
+      path:     /userinfo/
+      method:   ANY
+      function: 
+        isIntegratedResponse: true
+        functionName:         getUserInfoByAccessToken
+  apiGatewayServiceId: service-hfn87ilm
+  url:                 http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/
 ```
+如上图数据 `url`即为 `http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/`
 
 由于安全性你需要在`Authing`的`OIDC`详情中配置回调 URL 来允许我们创建的 `serverless 应用`使用 `OIDC` 登录服务。  
 在前面的准备阶段我们已经提过如何访问找到`OIDC`的详情页面。如果没有找到，还请返回查看。
-在详情页面中 我们只需要在`回调 URL` 的部分中将我们的`app url` 填写进去即可。
-<img src="./static/callbackUrl.png"  style="margin: auto;display: block;">
+在详情页面中 我们只需要在`回调 URL` 的部分中将我们的`app url`+'/code2token/' 填写进去即可。
+<img src="./static/setUrl.png"  styleheight='400px'   style="margin: auto;display: block;">
 
-## Have fun!🎉
+如上图的刚才运行的例子 即填写
+`http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/code2token/`
+
+## 测试项目
+在部署完成以后,我们可以尝试进行访问项目地址,以上图中的运行结果作为例子。
+项目地址为：`http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/`
+由于，我们在启动的是一个 `echo` 服务，所以他会显示访问信息并且不会自行进行跳转至登录接口。需要我们手动去访问登录的  `URL`。 
+<img src="./static/echoServer.png" height='400px' style="margin: auto;display: block;">
+
+这个时候访问 `/login/` 路由即可跳到登录界面，`url`为  
+`http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/`。
+我们在浏览器进行访问，即可发现已经跳转到了 `Authing` 登录页面。
+<img src="./static/loginPage.png" height='400px' style="margin: auto;display: block;">
+在完成登录以后会自动执行Code换取Token的流程，并且重新跳回到`/`路由 这个时候我们可以看到 返回的信息中多了 `Token` 而且在 `Cookie` 项中我们也可以看到 已经有了 `Token` 的值
+<img src="./static/cookie.png" height='400px' style="margin: auto;display: block;">
+## Todo List
+由于时间不足 项目存在很多不足 尚需要完善
+这是计划做的列表：
+- [ ] 完善文档说明&增加英文文档
+- [ ] 增加更加直观的 Demo
+- [ ] 改变 `SCF` 上传流程 通过复用压缩包加快函数上传速度
+- [ ] 增加接口的测试用例
+- [ ] 增加 `Cookie` 字符串的生成选项
+- [ ] 增加 Authing 的其他登录方式

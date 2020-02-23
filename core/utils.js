@@ -29,8 +29,8 @@ function generateResponse(
   isBase64Encoded = false
 ) {
   if (statusCode === 302) {
-    (headers["Content-Type"] = headers["Content-Type"] || "text/plain"),
-      (headers["location"] = data);
+    headers["Content-Type"] = headers["Content-Type"] || "text/plain";
+    headers["location"] = data;
     return {
       statusCode,
       body: "",
@@ -117,7 +117,7 @@ async function refreshToken(Token) {
   }
 }
 //return a Cookie's string
-async function genCookie(
+function genCookie(
   key,
   value = "",
   max_age = "",

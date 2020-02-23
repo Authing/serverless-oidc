@@ -71,16 +71,16 @@ class AuthingOidc extends Component {
     inputs.fromClientRemark = inputs.fromClientRemark || "Authing-ODIC";
     const outputs = {
       region: inputs.region,
-      functionName: inputs.name
+      appName: inputs.name
     };
 
     let authingComponents = {
       path:`${__dirname}/core`,
       appName:'core'
     }
-    let endpoints = await this.generateEndpoints(inputs,authingComponents.path,authingComponents.appName)
-    endpoints += await this.generateEndpoints(inputs,'./app','app')
-    // only user set apigatewayConf.isDisabled to `true`, do not create api
+   
+    let endpoints = await this.generateEndpoints(inputs,`${process.cwd()}/app`,'app')
+    endpoints = endpoints.concat(await this.generateEndpoints(inputs,authingComponents.path,authingComponents.appName))
     if (!inputs.apigatewayConf.isDisabled) {
       const tencentApiGateway = await this.load(
         "@serverless/tencent-apigateway"
@@ -101,17 +101,11 @@ class AuthingOidc extends Component {
         endpoints: endpoints,
         customDomain: inputs.apigatewayConf.customDomain
       };
-      if (inputs.apigatewayConf && inputs.apigatewayConf.usagePlan) {
-        apigwParam.endpoints[0].usagePlan = inputs.apigatewayConf.usagePlan;
-      }
-      if (inputs.apigatewayConf && inputs.apigatewayConf.auth) {
-        apigwParam.endpoints[0].auth = inputs.apigatewayConf.auth;
-      }
 
       apigwParam.fromClientRemark =
         inputs.fromClientRemark || "Authing-OIDC";
       const tencentApiGatewayOutputs = await tencentApiGateway(apigwParam);
-
+      outputs.route = endpoints
       outputs.apiGatewayServiceId = tencentApiGatewayOutputs.serviceId;
       outputs.url = `${this.getDefaultProtocol(
         tencentApiGatewayOutputs.protocols

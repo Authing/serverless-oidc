@@ -53,7 +53,7 @@ exports.getTokenByCode = async function getTokenByCode(event, context) {
     return generateResponse(
       `/release/?token=${token.access_token}`,
       302,
-      headers = { "Set-Cookie": genCookie(token) }
+      headers = { "Set-Cookie": genCookie('token',token.access_token) }
     );
   }
   return generateResponse(token);
