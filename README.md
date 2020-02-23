@@ -29,18 +29,18 @@ Serverless Authing OIDC(OpenID Connect) Demo.
 [Serless Oidc echo Demo](http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/)
 
 ## 设计思想
-Authing OIDC Component 组件是通过创建不同的 `scf(Serverless Cloud Function)`  并通过 `API` 网关触发器,来实现`OIDC`认证功能。
-他只需要占用这几个路由
+Authing OIDC Component 组件是通过创建不同的 `scf(Serverless Cloud Function)`  并通过 `API` 网关触发器,来实现 `OIDC` 认证功能。  
+他需要占用以下这几个路由：
 |  Route  | Desc |
 |  ----  | ----  |
 | /login/ | 实现登录的跳转 |
-| /code2token/  | 通过获取返回的 `Code`<br>来换取 `Token` 同时会<br>将`token`设置在`Cookie`<br>中 以及跳转到 `/` 路由 |
+| /code2token/  | 通过获取返回的 `Code`<br>来换取 `Token` 同时会<br>将 `token` 设置在`Cookie`<br>中 以及跳转到 `/` 路由 |
 | /refreshtoken/  | 刷新 `Token` |
 | /status/  | 返回 `OIDC` 应用正常与否|
 | /checktoken/ | 返回 `Token` 是否有效 |
 | /userinfo/  | 通过 `Token` 换取用户信息 |
 
-在完成认证以后会跳转至`/`路由 在这个路由下的应用只需要对去Cookie即可获取用户登录情况 以及获取用户的 Token 来完成其他的业务流程
+在完成认证以后会跳转至`/`路由 在这个路由下的应用只需要对去 `Cookie` 即可获取用户登录情况 以及获取用户的 `Token` 来完成其他的业务流程
 
 
 ## 前提条件 🧾
@@ -49,19 +49,19 @@ Authing OIDC Component 组件是通过创建不同的 `scf(Serverless Cloud Func
 
 1.  [Node.js](https://serverlesscloud.cn/doc/providers/tencent/cli-reference/quick-start#node) （8.x 或以上的版本）
 2.  Serverless Framework CLI
-3.  Authing OIDC AppID && Secret
+3.  Authing OIDC AppID && Secret && 认证地址
 
 ### 安装 Node.js 和 NPM
 
 - 参考 [Node.js 安装指南](https://nodejs.org/zh-cn/download/) 根据您的系统环境进行安装。
-- 安装完毕后，通过 node -v 命令，查看安装好的 Node.js 版本信息：
+- 安装完毕后，通过 `node -v` 命令，查看安装好的 `Node.js` 版本信息：
 
 ```shell
 $ node -v
 vx.x.x
 ```
 
-- 通过 npm -v 命令，查看安装好的 npm 版本信息：
+- 通过 `npm -v`命令，查看安装好的 `npm` 版本信息：
 
 ```shell
 $ npm -v
@@ -76,7 +76,7 @@ x.x.x
 $ npm install -g serverless
 ```
 
-- 安装完毕后，通过运行 serverless -v 命令，查看 Serverless Framework CLI 的版本信息。
+- 安装完毕后，通过运行 `serverless -v` 命令，查看 `Serverless Framework CLI` 的版本信息。
 
 ```shell
 $ serverless -v
@@ -140,8 +140,8 @@ firstApp:
     region: ap-shanghai
   authing:
     oidc: 
-      client_id: 你的OIDC应用id
-      domain: 你的OIDC域名
+      client_id: 你的 OIDC 应用 id
+      domain: 你的 OIDC 应用认证地址
       scope: openid profile
       grant_type: authorization_code
       prompt: login
@@ -154,7 +154,7 @@ firstApp:
 mkdir app&& touch app/app.js
 ```
 这里我们以一个`echo`服务为例子
-在`app.js`目录下创建
+在`app.js`文件中修改
 ```
 exports.echo = async function hello(event, context){
     return { 
@@ -167,9 +167,9 @@ exports.pathMap = [
     { path: "/", handlerName: "echo" },
 ]
 ```
-其中 `pathMap`定义了 不同的路由对应的 `Name` 的关系  
-`echo` 函数的定义是 腾讯`FAAS`的写法
-
+其中 `pathMap`定义了，不同的路由对应的函数的关系。
+`echo` 函数的定义是，腾讯 `云函数` 的写法。
+[云函数文档](https://cloud.tencent.com/document/product/583)
 
 ## 部署 🛫️
 
