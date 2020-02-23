@@ -102,7 +102,7 @@ x.x.x
 本地创建 `serverless.yml`文件：
 
 ```shell
-
+touch serverless.yml
 ```
 
 ### 2. 安装所需依赖
@@ -117,14 +117,19 @@ npm install --save @authing/serverless-oidc
 
 ```yml
 # serverless.yml
-express:
-  component: "@serverless/tencent-express"
+firstApp:
   inputs:
     region: ap-shanghai
+  authing:
+    oidc: 
+      client_id: 你的OIDC应用id
+      domain: 你的OIDC域名
+      scope: openid profile
+      grant_type: authorization_code
+      prompt: login
+      client_secret: 你的 OIDC 应用 secret
+      response_type: code
 ```
-
-### 4. 创建 Express 后端进程
-
 
 ## 部署 🛫️
 
@@ -153,40 +158,11 @@ TENCENT_SECRET_KEY=123
 
 ```sh
 $ sls --debug
-
-  DEBUG ─ Resolving the template's static variables.
-  DEBUG ─ Collecting components from the template.
-  DEBUG ─ Downloading any NPM components found in the template.
-  DEBUG ─ Analyzing the template's components dependencies.
-  DEBUG ─ Creating the template's components graph.
-  DEBUG ─ Syncing template state.
-  DEBUG ─ Executing the template's components graph.
-  DEBUG ─ Removing function
-  DEBUG ─ Request id
-  DEBUG ─ Compressing function ExpressComponent_b7ilv1 file to /Users/holegots/Project/Authing/serverless_compontents/serverless-oidc/demo/.serverless/ExpressComponent_b7ilv1.zip.
-  DEBUG ─ Compressed function ExpressComponent_b7ilv1 file successful
-  DEBUG ─ Uploading service package to cos[sls-cloudfunction-ap-shanghai-code]. sls-cloudfunction-default-ExpressComponent_b7ilv1-1582188831.zip
-  DEBUG ─ Uploaded package successful /Users/holegots/Project/Authing/serverless_compontents/serverless-oidc/demo/.serverless/ExpressComponent_b7ilv1.zip
-  DEBUG ─ Creating function ExpressComponent_b7ilv1
-  DEBUG ─ Created function ExpressComponent_b7ilv1 successful
-  DEBUG ─ Setting tags for function ExpressComponent_b7ilv1
-  DEBUG ─ Creating trigger for function ExpressComponent_b7ilv1
-  DEBUG ─ Deployed function ExpressComponent_b7ilv1 successful
-  DEBUG ─ Starting API-Gateway deployment with name express.TencentApiGateway in the ap-shanghai region
-  DEBUG ─ Using last time deploy service id service-jaom3m0x
-  DEBUG ─ Updating service with serviceId service-jaom3m0x.
-  DEBUG ─ Endpoint ANY / already exists with id api-g8bwotc8.
-  DEBUG ─ Updating api with api id api-g8bwotc8.
-  DEBUG ─ Service with id api-g8bwotc8 updated.
-  DEBUG ─ Deploying service with id service-jaom3m0x.
-  DEBUG ─ Deployment successful for the api named express.TencentApiGateway in the ap-shanghai region.
-
   express:
     region:              ap-shanghai
     functionName:        ExpressComponent_b7ilv1
     apiGatewayServiceId: service-jaom3m0x
     url:                 http://service-jaom3m0x-1257685189.sh.apigw.tencentcs.com/release/
-
   38s › express › done
 ```
 
