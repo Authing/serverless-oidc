@@ -21,6 +21,11 @@ exports.pathMap = [
   { path: "/userinfo/", handlerName: "getUserInfoByAccessToken" }
 ];
 
+//hello
+exports.hello = async function hello(event, context) {
+  return generateResponse(event);
+};
+
 //status
 exports.status = async function status(event, context) {
   return generateResponse("ok");

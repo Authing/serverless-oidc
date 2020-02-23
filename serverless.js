@@ -1,14 +1,11 @@
 const path = require("path");
-const { Component, utils } = require("@serverless/core");
+const { Component } = require("@serverless/core");
 const random = require("ext/string/random");
 const ensureString = require("type/string/ensure");
 const ensureIterable = require("type/iterable/ensure");
 const ensurePlainObject = require("type/plain-object/ensure");
 
 class AuthingOidc extends Component {
-  getAppFiles() {
-    return null
-  }
   getDefaultProtocol(protocols) {
     if (protocols.map(i => i.toLowerCase()).includes("https")) {
       return "https";
@@ -23,20 +20,20 @@ class AuthingOidc extends Component {
       "@serverless/tencent-scf",
       handlerName
     );
-    console.log(tencentCloudFunction.state.deployed);
     inputs.handler = `${appName}.${handlerName}`;
-    console.log(inputs);
     const cloudFunctionOutputs = await tencentCloudFunction(inputs);
     return cloudFunctionOutputs;
   }
-  async generateEndpoints(inputs) {
-    console.log(this.pathMap);
+
+  async generateEndpoints(inputs,path,appName) {
+    let pathMap = require(`${path}/${appName}.js`).pathMap;
+    inputs.codeUri = `${path}/`
     let endpoints = [];
-    for (let item of this.pathMap) {
-      console.log(`start update function ${item.handlerName}`);
+    for (let item of pathMap) {
+      console.log(`start uploading function ${item.handlerName}`);
       let endpoint = { path: item.path, method: item.method||"ANY" };
-      let cloudFunction = await this.updateFunction(inputs, item.handlerName);
-      console.log(cloudFunction);
+      let cloudFunction = await this.updateFunction(inputs, item.handlerName,appName=appName);
+      this.context.debug(`${item.handlerName} upload success`)
       endpoint["function"] = {
         isIntegratedResponse: true,
         functionName: cloudFunction.Name
@@ -45,11 +42,10 @@ class AuthingOidc extends Component {
     }
     return endpoints;
   }
-  async default(inputs = {}) {
-    this.pathMap = require('./code/core.js').pathMap;
-    inputs.name = inputs.name || `Authing-OIDC_${random({ length: 6})}`
 
-    inputs.codeUri = process.cwd() + "/code/";
+  async default(inputs = {}) {
+    inputs.name = inputs.name || `Authing-OIDC_${random({ length: 6})}`
+    inputs.codeUri = process.cwd() + "/core/";
     inputs.region = ensureString(inputs.region, { default: "ap-guangzhou" });
     inputs.include = ensureIterable(inputs.include, {
       default: [],
@@ -71,16 +67,19 @@ class AuthingOidc extends Component {
       ".*",
       "update/"
     ];
-
     inputs.runtime = "Nodejs8.9";
-
-
     inputs.fromClientRemark = inputs.fromClientRemark || "Authing-ODIC";
     const outputs = {
       region: inputs.region,
       functionName: inputs.name
     };
 
+    let authingComponents = {
+      path:`${__dirname}/core`,
+      appName:'core'
+    }
+    let endpoints = await this.generateEndpoints(inputs,authingComponents.path,authingComponents.appName)
+    endpoints += await this.generateEndpoints(inputs,'./app','app')
     // only user set apigatewayConf.isDisabled to `true`, do not create api
     if (!inputs.apigatewayConf.isDisabled) {
       const tencentApiGateway = await this.load(
@@ -111,7 +110,6 @@ class AuthingOidc extends Component {
 
       apigwParam.fromClientRemark =
         inputs.fromClientRemark || "Authing-OIDC";
-      console.log(apigwParam);
       const tencentApiGatewayOutputs = await tencentApiGateway(apigwParam);
 
       outputs.apiGatewayServiceId = tencentApiGatewayOutputs.serviceId;

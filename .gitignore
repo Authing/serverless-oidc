@@ -18,6 +18,7 @@ env.js
 package-lock.json
 test
 tmp/
+app/
 app.js
 serverless.yml
 
