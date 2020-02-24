@@ -153,13 +153,18 @@ mkdir app&& touch app/app.js
 ```
 这里我们以一个`echo`服务为例子
 在`app.js`文件中修改
-```
+```js
 exports.callback = async function echo(event, context){
     return { 
         headers: {"Content-Type": "application/json"}, 
         body: JSON.stringify(event), 
         statusCode: 200,
     }
+    // return { 
+    //     headers: {"Content-Type": "application/json"}, 
+    //     body: JSON.stringify(event.queryString),  // 这参数可以拿到Token的信息 
+    //     statusCode: 200,
+    // }
 }
 exports.pathMap = [
     { path: "/", handlerName: "callback" },
