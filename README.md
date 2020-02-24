@@ -114,19 +114,24 @@ firstApp:
       response_type: code
 ```
 ### 3. 获取 Token
+
 在根目录下创建`app`目录，以及入口文件`app.js`。
+
 ```sh
 mkdir app&& touch app/app.js
 ```
-这里我们以一个`echo`服务为例子
-在`app.js`文件中修改
+
+在`app.js`文件中添加如下代码 ：
+
 ```js
 exports.callback = async function echo(event, context){
     // 此函数可用来获取 oidc 签发的 token，然后可用 token 换取 userInfo
-    // token 获取方式：event.xxx.token
+    // 通过发送 Get 请求到如下链接获取 userInfo
+    // https://users.authing.cn/oauth/oidc/user/userinfo?access_token=YOUR_ACCESS_TOKEN
+    // token 获取方式：event.queryString.token
     return { 
         headers: {"Content-Type": "application/json"}, 
-        body: JSON.stringify(event), 
+        body: JSON.stringify(event.queryString.token), 
         statusCode: 200,
     }
 }
@@ -135,12 +140,13 @@ exports.pathMap = [
 ]
 
 ```
-其中 `pathMap`定义了，不同的路由对应的函数的关系。
-`echo` 函数的定义是，腾讯 `云函数` 的写法。
-[云函数文档](https://cloud.tencent.com/document/product/583)
 
-## 使用流程
-本组件定义了一下路由：
+在完成认证以后 Authing 会跳转至`/`路由，这个路由对应的函数是如上的函数，你可以在此函数中完成其他业务流程，如获取用户信息、设置 Coookie、跳转到用户业务界面等。
+
+## 路由定义
+
+本组件默认定义了以下路由：
+
 |  Route  | Desc |
 |  ----  | ----  |
 | /login/ | 实现登录的跳转 |
@@ -149,8 +155,6 @@ exports.pathMap = [
 | /status/  | 返回 `OIDC` 应用正常与否|
 | /checktoken/ | 返回 `Token` 是否有效 |
 | /userinfo/  | 通过 `Token` 换取用户信息 |
-
-在完成认证以后会跳转至`/`路由，在这个路由下的应用只需要对 `Cookie` 进行查看，即可获取用户登录情况 以及获取用户的 `Token` 从而来完成其他的业务流程。
 
 ## 部署 🛫️
 
