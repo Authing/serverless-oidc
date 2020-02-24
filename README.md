@@ -110,7 +110,7 @@ x.x.x
       <img src="./static/CleanShot2020-02-20at15.25.54.png" height='400px' style="margin: auto;display: block;">
    </details>
 
-## 实现自己的业务逻辑 🚗
+## 创建应用 🚗
 
 ### 1. 创建需要的文件
 
@@ -120,13 +120,7 @@ x.x.x
 touch serverless.yml
 ```
 
-### 2. 安装所需依赖
-
-```
-npm install
-```
-
-### 3. 编辑 `serverless.yml` 文件
+### 2. 编辑 `serverless.yml` 文件
 
 在 serverless.yml 中进行如下配置
 
@@ -146,8 +140,8 @@ firstApp:
       client_secret: 你的 OIDC 应用 secret
       response_type: code
 ```
-### 4. 创建你的应用
-在根目录下创建`app`目录 以及入口文件`app.js`
+### 3. 获取 Token
+在根目录下创建`app`目录，以及入口文件`app.js`。
 ```sh
 mkdir app&& touch app/app.js
 ```
@@ -155,6 +149,8 @@ mkdir app&& touch app/app.js
 在`app.js`文件中修改
 ```js
 exports.callback = async function echo(event, context){
+    // 此函数可用来获取 oidc 签发的 token，然后可用 token 换取 userInfo
+    // token 获取方式：event.xxx.token
     return { 
         headers: {"Content-Type": "application/json"}, 
         body: JSON.stringify(event), 
@@ -276,7 +272,7 @@ start uploading function getUserInfoByAccessToken
 `http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/`。
 我们在浏览器进行访问，即可发现已经跳转到了 `Authing` 登录页面。
 <img src="./static/loginPage.png" height='400px' style="margin: auto;display: block;">
-在完成登录以后会自动执行Code换取Token的流程，并且重新跳回到`/`路由 这个时候我们可以看到 返回的信息中多了 `Token` 而且在 `Cookie` 项中我们也可以看到 已经有了 `Token` 的值
+在完成登录以后会自动执行 `Code` 换取 `Token` 的流程，并且会带着 `Cookie` 重新跳回到 `/` 路由,这个时候我们可以看到，返回的信息中多了 `Token` 而且在 `Cookie` 项中我们也可以看到，已经有了 `Token` 的值.
 <img src="./static/cookie.png" height='400px' style="margin: auto;display: block;">
 ## Todo List
 由于时间不足 项目存在很多不足 尚需要完善
