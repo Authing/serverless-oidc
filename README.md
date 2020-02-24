@@ -82,33 +82,21 @@ $ npm install -g serverless
 $ serverless -v
 x.x.x
 ```
+### 获取 Authing 必须信息
+<p>
+1. 首先注册一个 <a href="https://sign.authing.cn/login" target="_blank">Authing 账号</a>。
 
-<details>
-<summary style="font-size:1.25em"><strong>注册 Authing 账户</strong></summary>
+<p>
+2. 注册完成后在控制台中依次点击 <strong>第三方登录</strong> -> <strong>OIDC 应用</strong>后，可以看到OIDC 应用列表，点击应用名即可看到该应用信息。
+</p>
 
-1. 首先访问[Authing SSO](https://sign.authing.cn/login)进行注册，在注册成功后会自动跳转至 Guide 页面指引你创建一个用户池。
-   <img src="./static/CleanShot2020-02-20at15.10.45.png" height='400px' style="margin: auto;display: block;">
-2. 在这里填写想要的用户池名。
+![](https://cdn.authing.cn/blog/20200221220348.png)
 
-   <img src="./static/CleanShot2020-02-20at15.12.18.png" height='400px' style="margin: auto;display: block;">
+<p>
+3. 在应用信息中可以看到 <strong>AppID</strong>、<strong>Secret</strong>和<strong>认证地址</strong>。
+</p>
 
-3. 选择二级域名 你可以选择一个你喜欢的二级域名作为你的业务域名。
-
-   <img src="./static/CleanShot2020-02-20at15.14.02.png" height='400px' style="margin: auto;display: block;">
-
-4. 填写回调地址 在这里可以选择你喜欢的业务回调地址。
-   <img src="./static/CleanShot2020-02-20at17.29.58.png" height='400px' style="margin: auto;display: block;">
-
-5. 选择 OIDC 应用  
-   在创建完成后自动跳转至，控制台。  
-   在控制台中分别点击 `第三方登录`->`OIDC应用`后，可以看到已经生成的 OIDC 应用名，点击应用名即可看到该应用信息。
-
-   <img src="./static/CleanShot2020-02-20at15.21.50.png" height='400px' style="margin: auto;display: block;">
-
-6. 在应用信息中可以看到 `AppID` 和 `Secret` 信息
-
-      <img src="./static/CleanShot2020-02-20at15.25.54.png" height='400px' style="margin: auto;display: block;">
-   </details>
+![](https://cdn.authing.cn/blog/20200221220448.png)
 
 ## 创建应用 🚗
 
