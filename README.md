@@ -114,21 +114,24 @@ firstApp:
       response_type: code
 ```
 ### 3. 获取 Token
+
 在根目录下创建`app`目录，以及入口文件`app.js`。
+
 ```sh
 mkdir app&& touch app/app.js
 ```
-这里我们以一个`echo`服务为例子
-在`app.js`文件中修改
+
+在`app.js`文件中添加如下代码 ：
+
 ```js
 exports.callback = async function echo(event, context){
     // 此函数可用来获取 oidc 签发的 token，然后可用 token 换取 userInfo
-    // token 获取方式：event.xxx.token
-    // 通过请求以下链接获取 userInfo
+    // 通过发送 Get 请求到如下链接获取 userInfo
     // https://users.authing.cn/oauth/oidc/user/userinfo?access_token=YOUR_ACCESS_TOKEN
+    // token 获取方式：event.queryString.token
     return { 
         headers: {"Content-Type": "application/json"}, 
-        body: JSON.stringify(event), 
+        body: JSON.stringify(event.queryString.token), 
         statusCode: 200,
     }
 }
@@ -137,12 +140,13 @@ exports.pathMap = [
 ]
 
 ```
-其中 `pathMap`定义了，不同的路由对应的函数的关系。
-`echo` 函数的定义是，腾讯 `云函数` 的写法。
-[云函数文档](https://cloud.tencent.com/document/product/583)
 
-## API 定义
-本组件定义了一下路由：
+在完成认证以后 Authing 会跳转至`/`路由，这个路由对应的函数是如上的函数，你可以在此函数中完成其他业务流程，如获取用户信息、设置 Coookie、跳转到用户业务界面等。
+
+## 路由定义
+
+本组件默认定义了以下路由：
+
 |  Route  | Desc |
 |  ----  | ----  |
 | /login/ | 实现登录的跳转 |
@@ -151,20 +155,6 @@ exports.pathMap = [
 | /status/  | 返回 `OIDC` 应用正常与否|
 | /checktoken/ | 返回 `Token` 是否有效 |
 | /userinfo/  | 通过 `Token` 换取用户信息 |
-
-在完成认证以后会跳转至`/`路由，在这个路由下的应用只需要对 `Cookie` 进行查看，即可获取用户登录情况 以及获取用户的 `Token` 从而来完成其他的业务流程。
-### 获取用户信息
-在获得 `Token` 
-```js
-axios({
-	"method": "POST",
-	"url": "http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/userinfo/",
-	"headers": {
-		"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
-	},
-	"data": "access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2TGVkVGk4M35-V0JlZHF0aTUydlQiLCJzdWIiOiI1ZGYwODkwNDlkMGRmNDJjZTA3NmY1M2IiLCJpc3MiOiJodHRwczovL29hdXRoLmF1dGhpbmcuY24vb2F1dGgvb2lkYyIsImlhdCI6MTU4MjUxNzU2MCwiZXhwIjoxNTgyNTIxMTYwLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIiwiYXVkIjoiNWRmMjAzNmE2NzNkNDc3MzIxZTFkZWI2In0.kmFjeu5B34NnJH76m0A6mdn9D3JN7t_VnT4vtTb0Y8I"
-})
-```
 
 ## 部署 🛫️
 
@@ -265,8 +255,11 @@ start uploading function getUserInfoByAccessToken
 `http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/`。
 我们在浏览器进行访问，即可发现已经跳转到了 `Authing` 登录页面。
 <img src="./static/loginPage.png" height='400px' style="margin: auto;display: block;">
-在完成登录以后会自动执行 `Code` 换取 `Token` 的流程，并且会带着 `Cookie` 重新跳回到 `/` 路由,这个时候我们可以看到，返回的信息中多了 `Token` 而且在 `Cookie` 项中我们也可以看到，已经有了 `Token` 的值.
+在完成登录以后会自动执行 `Code` 换取 `Token` 的流程，并且会带着 `Cookie` 重新跳回到 `/` 路由,这个时候我们可以看到，返回的信息中多了 `Token` 而且在 `Cookie` 项中我们也可以看到，已经有了 `Token` 的值.   
+
 <img src="./static/cookie.png" height='400px' style="margin: auto;display: block;">
+
+同时在 `callback` 函数中的 `event.paramString` 可以获取到 `Token` 的信息。如果需要执行其他的业务逻辑，只需要在 `Callback` 函数中利用 `Token` 进行其他的业务操作即可。
 ## Todo List
 由于时间不足 项目存在很多不足 尚需要完善
 这是计划做的列表：
