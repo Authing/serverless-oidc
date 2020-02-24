@@ -4,7 +4,8 @@ const random = require("ext/string/random");
 const ensureString = require("type/string/ensure");
 const ensureIterable = require("type/iterable/ensure");
 const ensurePlainObject = require("type/plain-object/ensure");
-
+const exec = require('child_process').execSync
+const existsSync = require('fs').existsSync
 class AuthingOidc extends Component {
   getDefaultProtocol(protocols) {
     if (protocols.map(i => i.toLowerCase()).includes("https")) {
@@ -12,7 +13,19 @@ class AuthingOidc extends Component {
     }
     return "http";
   }
-
+  async resolveNodeModules(path){
+    if(!await existsSync(path+'/node_modules')){
+      console.log(path);
+      this.context.debug('Are solving the problem of dependencepend on')
+      try{
+        exec('npm install',{cwd:path,encoding:'utf8'}) 
+      }catch(err){
+        console.log('npm install failed')
+        console.log(err)
+      }
+      this.context.debug('npm install successes')
+    }
+  }
   async updateFunction(inputs, handlerName,appName="core") {
     inputs.Description = `This is a ${handlerName}`;
     inputs.name = handlerName;
@@ -46,6 +59,7 @@ class AuthingOidc extends Component {
   async default(inputs = {}) {
     inputs.name = inputs.name || `Authing-OIDC_${random({ length: 6})}`
     inputs.codeUri = process.cwd() + "/core/";
+    await this.resolveNodeModules(__dirname + "/core/")
     inputs.region = ensureString(inputs.region, { default: "ap-guangzhou" });
     inputs.include = ensureIterable(inputs.include, {
       default: [],

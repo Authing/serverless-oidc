@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "axios": "^0.19.2",
     "js-yaml": "^3.13.1",
     "qs": "^6.9.1"
   }
