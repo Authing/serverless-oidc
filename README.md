@@ -29,7 +29,7 @@ Serverless Authing OIDC(OpenID Connect) Demo.
 [Serless Oidc echo Demo](http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/)
 
 ## 使用流程
-他需要这几个路由：
+本组件定义了一下路由：
 |  Route  | Desc |
 |  ----  | ----  |
 | /login/ | 实现登录的跳转 |
