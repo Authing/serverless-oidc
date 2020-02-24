@@ -28,20 +28,6 @@ Serverless Authing OIDC(OpenID Connect) Demo.
 
 [Serless Oidc echo Demo](http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/)
 
-## 使用流程
-本组件定义了一下路由：
-|  Route  | Desc |
-|  ----  | ----  |
-| /login/ | 实现登录的跳转 |
-| /code2token/  | 通过获取返回的 `Code`<br>来换取 `Token` 同时会<br>将 `token` 设置在`Cookie`<br>中 以及跳转到 `/` 路由 |
-| /refreshtoken/  | 刷新 `Token` |
-| /status/  | 返回 `OIDC` 应用正常与否|
-| /checktoken/ | 返回 `Token` 是否有效 |
-| /userinfo/  | 通过 `Token` 换取用户信息 |
-
-在完成认证以后会跳转至`/`路由，在这个路由下的应用只需要对 `Cookie` 进行查看，即可获取用户登录情况 以及获取用户的 `Token` 从而来完成其他的业务流程。
-
-
 ## 前提条件 🧾
 
 在使用之前，请确保具备以下条件：
@@ -152,6 +138,19 @@ exports.pathMap = [
 其中 `pathMap`定义了，不同的路由对应的函数的关系。
 `echo` 函数的定义是，腾讯 `云函数` 的写法。
 [云函数文档](https://cloud.tencent.com/document/product/583)
+
+## 使用流程
+本组件定义了一下路由：
+|  Route  | Desc |
+|  ----  | ----  |
+| /login/ | 实现登录的跳转 |
+| /code2token/  | 通过获取返回的 `Code`<br>来换取 `Token` 同时会<br>将 `token` 设置在`Cookie`<br>中 以及跳转到 `/` 路由 |
+| /refreshtoken/  | 刷新 `Token` |
+| /status/  | 返回 `OIDC` 应用正常与否|
+| /checktoken/ | 返回 `Token` 是否有效 |
+| /userinfo/  | 通过 `Token` 换取用户信息 |
+
+在完成认证以后会跳转至`/`路由，在这个路由下的应用只需要对 `Cookie` 进行查看，即可获取用户登录情况 以及获取用户的 `Token` 从而来完成其他的业务流程。
 
 ## 部署 🛫️
 
