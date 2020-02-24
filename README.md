@@ -22,14 +22,14 @@ Serverless Authing OIDC(OpenID Connect) Demo.
 
 ## 应用介绍 🏠
 
-您可以通过以下几步操作快速的创建一个使用 Tencent Scf 和 Api 网关 组成的 实现 OIDC 流畅的Serverless应用。
+您可以通过以下几步操作快速的创建一个使用 `Tencent Scf` 和 `Api` 网关 组成的 实现 OIDC 流畅的Serverless应用。
 
 ## 示例链接 🔗
 
 [Serless Oidc echo Demo](http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/)
 
 ## 设计思想
-Authing OIDC Component 组件是通过创建不同的 `scf(Serverless Cloud Function)`  并通过 `API` 网关触发器,来实现 `OIDC` 认证功能。  
+Authing OIDC Component 组件是通过创建不同的 `scf(Serverless Cloud Function)`,并通过 `API` 网关触发器,来实现 `OIDC` 认证功能。  
 他需要占用以下这几个路由：
 |  Route  | Desc |
 |  ----  | ----  |
@@ -110,11 +110,8 @@ x.x.x
       <img src="./static/CleanShot2020-02-20at15.25.54.png" height='400px' style="margin: auto;display: block;">
    </details>
 
-## 构建应用 🚗
-### 0. Clone 仓库
-```sh
-git clone https://github.com/Authing/serverless-oidc.git && cd serverless-oidc
-```
+## 实现自己的业务逻辑 🚗
+
 ### 1. 创建需要的文件
 
 本地创建 `serverless.yml`文件：
@@ -136,6 +133,7 @@ npm install
 ```yml
 # serverless.yml
 firstApp:
+  component: 'serverless-oidc'
   inputs:
     region: ap-shanghai
   authing:
@@ -156,7 +154,7 @@ mkdir app&& touch app/app.js
 这里我们以一个`echo`服务为例子
 在`app.js`文件中修改
 ```
-exports.echo = async function hello(event, context){
+exports.callback = async function echo(event, context){
     return { 
         headers: {"Content-Type": "application/json"}, 
         body: JSON.stringify(event), 
@@ -164,8 +162,9 @@ exports.echo = async function hello(event, context){
     }
 }
 exports.pathMap = [
-    { path: "/", handlerName: "echo" },
+    { path: "/", handlerName: "callback" },
 ]
+
 ```
 其中 `pathMap`定义了，不同的路由对应的函数的关系。
 `echo` 函数的定义是，腾讯 `云函数` 的写法。
@@ -266,11 +265,8 @@ start uploading function getUserInfoByAccessToken
 `http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/code2token/`
 
 ## 测试项目
-在部署完成以后,我们可以尝试进行访问项目地址,以上图中的运行结果作为例子。
-项目地址为：`http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/`
 由于，我们在启动的是一个 `echo` 服务，所以他会显示访问信息并且不会自行进行跳转至登录接口。需要我们手动去访问登录的  `URL`。 
 <img src="./static/echoServer.png" height='400px' style="margin: auto;display: block;">
-
 这个时候访问 `/login/` 路由即可跳到登录界面，`url`为  
 `http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/`。
 我们在浏览器进行访问，即可发现已经跳转到了 `Authing` 登录页面。
