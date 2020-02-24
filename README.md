@@ -261,9 +261,7 @@ start uploading function getUserInfoByAccessToken
 `http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/code2token/`
 
 ## 测试项目
-由于，我们在启动的是一个 `echo` 服务，所以他会显示访问信息并且不会自行进行跳转至登录接口。需要我们手动去访问登录的  `URL`。 
-<img src="./static/echoServer.png" height='400px' style="margin: auto;display: block;">
-这个时候访问 `/login/` 路由即可跳到登录界面，`url`为  
+访问 `/login/` 路由即可跳到登录界面，`url`为  
 `http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/`。
 我们在浏览器进行访问，即可发现已经跳转到了 `Authing` 登录页面。
 <img src="./static/loginPage.png" height='400px' style="margin: auto;display: block;">
