@@ -156,11 +156,6 @@ exports.callback = async function echo(event, context){
         body: JSON.stringify(event), 
         statusCode: 200,
     }
-    // return { 
-    //     headers: {"Content-Type": "application/json"}, 
-    //     body: JSON.stringify(event.queryString),  // 这参数可以拿到Token的信息 
-    //     statusCode: 200,
-    // }
 }
 exports.pathMap = [
     { path: "/", handlerName: "callback" },
