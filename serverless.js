@@ -120,14 +120,13 @@ class AuthingOidc extends Component {
         inputs.fromClientRemark || "Authing-OIDC";
       const tencentApiGatewayOutputs = await tencentApiGateway(apigwParam);
       outputs.route = endpoints
-
       outputs.apiGatewayServiceId = tencentApiGatewayOutputs.serviceId;
       outputs.url = `${this.getDefaultProtocol(
         tencentApiGatewayOutputs.protocols
       )}://${tencentApiGatewayOutputs.subDomain}/${
         tencentApiGatewayOutputs.environment
       }/`;
-      outputs.info = `请到 Auting 控制台将 ${outputs.url}/code2token/ 添加至 回调 URL`
+      outputs.info = `请到 Authing OIDC 应用控制台将 ${outputs.url}code2token/ 添加至 回调 URL`
       if (tencentApiGatewayOutputs.customDomains) {
         outputs.customDomains = tencentApiGatewayOutputs.customDomains;
       }
