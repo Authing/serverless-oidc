@@ -131,7 +131,7 @@ exports.callback = async function echo(event, context){
     // token 获取方式：event.queryString.token
     return { 
         headers: {"Content-Type": "application/json"}, 
-        body: JSON.stringify(event.queryString.token), 
+        body: JSON.stringify(event.queryString), 
         statusCode: 200,
     }
 }
