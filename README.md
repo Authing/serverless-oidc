@@ -107,7 +107,7 @@ firstApp:
     oidc: 
       client_id: 你的 OIDC 应用 id
       domain: 你的 OIDC 应用认证地址
-      scope: openid profile
+      scope: openid profile email phone
       grant_type: authorization_code
       prompt: login
       client_secret: 你的 OIDC 应用 secret
