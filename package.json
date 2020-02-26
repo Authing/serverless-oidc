@@ -1,6 +1,6 @@
 {
   "name": "serverless-oidc",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "serverless oidc",
   "main": "serverless.js",
   "directories": {

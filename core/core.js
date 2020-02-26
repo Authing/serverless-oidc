@@ -1,4 +1,5 @@
 const axios = require("axios");
+const qs = require("qs")
 const {
   CONFIG,
   code2Token,
@@ -51,7 +52,7 @@ exports.getTokenByCode = async function getTokenByCode(event, context) {
   let token = await code2Token(code,host);
   if (token||token.access_token){
     return generateResponse(
-      `/release/?token=${token.access_token}`,
+      `/release/?${qs.stringify(token)}`,
       302,
       headers = { "Set-Cookie": genCookie('token',token.access_token) }
     );
