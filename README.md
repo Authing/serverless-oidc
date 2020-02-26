@@ -141,7 +141,18 @@ exports.pathMap = [
 
 ```
 
-在完成认证以后 Authing 会跳转至`/`路由，这个路由对应的函数是如上的函数，你可以在此函数中完成其他业务流程，如获取用户信息、设置 Coookie、跳转到用户业务界面等。
+在完成认证以后 Authing 会跳转至`/`路由，这个路由对应的函数是如上的函数，你可以在此函数中完成其他业务流程，如获取用户信息、设置 Coookie、跳转到用户业务界面等。   
+跳转以后就可以在 `event.queryString` 参数中读取到所有的内容,如 `access_token`,`id_token`,`expires_in`,`scope`,`token_type`。  
+数据结构如下:
+```js
+{
+    "access_token": "",
+    "expires_in": "",
+    "id_token": "",
+    "scope": "",
+    "token_type": ""
+}
+```
 
 ## 路由定义
 
@@ -255,7 +266,7 @@ start uploading function getUserInfoByAccessToken
 `http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/`。
 我们在浏览器进行访问，即可发现已经跳转到了 `Authing` 登录页面。
 <img src="./static/loginPage.png" height='400px' style="margin: auto;display: block;">
-在完成登录以后会自动执行 `Code` 换取 `Token` 的流程，并且会带着 `Cookie` 重新跳回到 `/` 路由,这个时候我们可以看到，返回的信息中多了 `Token` 而且在 `Cookie` 项中我们也可以看到，已经有了 `Token` 的值.   
+在完成登录以后会自动执行 `Code` 换取 `Token` 的流程，并且会带着 `Cookie` 重新跳回到 `/` 路由,这个时候我们可以看到，返回的信息中多了 `Token`，而且在 `Cookie` 项中我们也可以看到，已经有了 `Token` 的值.   
 
 <img src="./static/cookie.png" height='400px' style="margin: auto;display: block;">
 
