@@ -18,15 +18,11 @@ Serverless Authing OIDC(OpenID Connect) Demo.
 下图是一个以授权码为例子的 OIDC 授权流程：
 <img src="./static/OIDCFlowGraphql.png" style="margin: auto;display: block;"/>
 
-更多信息可以查看 [OIDC 流程](https://docs.authing.cn/authing/advanced/oidc/understand-oidc)。
+更多信息可以查看 [OIDC 流程](https://docs.authing.cn/authentication/oidc/understand-oidc.html)。
 
 ## 应用介绍 🏠
 
 您可以通过以下几步操作快速的创建一个带有OIDC功能的Serverless应用。
-
-## 示例链接 🔗
-
-[Serless Oidc echo Demo](http://service-hfn87ilm-1257685189.gz.apigw.tencentcs.com/release/login/)
 
 ## 前提条件 🧾
 
@@ -69,7 +65,7 @@ x.x.x
 ```
 ### 获取 Authing 必须信息
 <p>
-1. 首先注册一个 <a href="https://sign.authing.cn/login" target="_blank">Authing 账号</a>。
+1. 首先注册一个 <a href="https://console.authing.cn/login" target="_blank">Authing 账号</a>。
 
 <p>
 2. 注册完成后在控制台中依次点击 <strong>第三方登录</strong> -> <strong>OIDC 应用</strong>后，可以看到OIDC 应用列表，点击应用名即可看到该应用信息。
